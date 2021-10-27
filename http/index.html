@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>api 연습</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    #content {
+      position: absolute;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 80%;
+
+      background-color: wheat;
+    }
+    .thumbnail {
+    }
+    .thumbnail img {
+      border: black 4px solid;
+      width: 20vw;
+    }
+    .search {
+      box-decoration-break: ;
+    }
+  </style>
+  <body>
+    <input id="bookName" value="" type="text" />
+    <button id="search">검색</button>
+
+    <section id="content" style="z-index: 0">
+      <div class="thumbnail"></div>
+      <div class="title"></div>
+    </section>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const bookName = document.querySelector('#bookName');
+
+      $(document).ready(function () {
+        $('#search').click(function () {
+          $.ajax({
+            method: 'GET',
+            url: 'https://dapi.kakao.com/v3/search/book?target=title',
+            data: { query: `${bookName.value}`, sort: 'accuracy' }, // 키워드가 들어간 책을 찾아주고 발간일순으로 정렬도 가능하다
+            headers: {
+              Authorization: 'KakaoAK b6088f060c678ec3bc1131925b72ae11',
+            },
+          }).done(function (msg) {
+            console.log(msg.documents[0].title);
+            console.log(msg.documents[0].thumbnail);
+            $('.title').append(`<strong> ${msg.documents[0].title} </strong>`);
+            $('.thumbnail').append(
+              `<img src='${msg.documents[0].thumbnail}'/>`
+            );
+          });
+        });
+      });
+
+      // $.ajax({
+      //   method: 'GET',
+      //   url: 'https://dapi.kakao.com/v3/search/book?target=title',
+      //   data: { query: `${bookName}`, sort: 'accuracy' }, // 키워드가 들어간 책을 찾아주고 발간일순으로 정렬도 가능하다
+      //   headers: {
+      //     Authorization: 'KakaoAK b6088f060c678ec3bc1131925b72ae11',
+      //   },
+      // }).done(function (msg) {
+      //   console.log(msg.documents[0].title);
+      //   console.log(msg.documents[0].thumbnail);
+      //   $('.title').append(`<strong> ${msg.documents[0].title} </strong>`);
+      //   $('.thumbnail').append(`<img src='${msg.documents[0].thumbnail}'/>`);
+      // });
+    </script>
+  </body>
+</html>
